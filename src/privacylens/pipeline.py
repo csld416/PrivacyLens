@@ -70,6 +70,7 @@ class VideoPipeline:
             "unique_frames_analyzed": len(cache),
             "replace_decisions": sum(event["action"] == "REPLACE" for event in events),
             "keep_decisions": sum(event["action"] == "KEEP" for event in events),
+            "llm_decisions": sum(event["decided_by"] == "llm" for event in events),
             "events": events,
         }
         log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -80,6 +81,7 @@ class VideoPipeline:
             "unique_frames_analyzed": len(cache),
             "replace_decisions": report["replace_decisions"],
             "keep_decisions": report["keep_decisions"],
+            "llm_decisions": report["llm_decisions"],
         }
 
     @staticmethod
@@ -92,7 +94,7 @@ class VideoPipeline:
     def _process_frame(self, frame: np.ndarray, frame_index: int) -> Tuple[np.ndarray, List[dict]]:
         output = frame.copy()
         words = self.ocr.read(frame)
-        surrounding_text = " ".join(word.text for word in words)
+        surrounding_text = "\n".join(word.text for word in words)
         events = []
         for word in words:
             decisions: List[Tuple[Candidate, PrivacyDecision]] = []
@@ -107,6 +109,7 @@ class VideoPipeline:
                         "action": decision.action,
                         "replacement": decision.replacement,
                         "reason": decision.reason,
+                        "decided_by": decision.decided_by,
                         "bbox": list(word.bbox),
                     }
                 )

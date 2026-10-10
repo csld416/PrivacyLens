@@ -1,13 +1,14 @@
-"""Context-aware sensitivity classifier interface and MVP heuristic.
+"""Context-aware sensitivity classifier interface and rule-based classifiers.
 
-The Stage I implementation is a transparent policy heuristic. It is not an LLM
-and the project must not present it as one. A future local model can implement
-the same classifier interface without changing the video pipeline.
+`HeuristicContextClassifier` is a transparent keyword heuristic, not AI. It is
+the fallback when no local language model is available. The language-model
+classifier in `llm.py` implements the same interface.
 """
 
 import ipaddress
 from abc import ABC, abstractmethod
 from difflib import SequenceMatcher
+from typing import Optional
 
 from .config import PrivacyContext
 from .models import Candidate, PrivacyDecision
@@ -30,6 +31,11 @@ PLACEHOLDERS = {
 # can never be kept merely because it resembles an allowlisted literal.
 PLACEHOLDER_SIMILARITY = 0.85
 
+
+def placeholder_for(entity_type: str) -> str:
+    return PLACEHOLDERS.get(entity_type, "<SENSITIVE>")
+
+
 class SensitivityClassifier(ABC):
     @abstractmethod
     def classify(self, candidate: Candidate, surrounding_text: str) -> PrivacyDecision:
@@ -41,8 +47,12 @@ class HeuristicContextClassifier(SensitivityClassifier):
         self.context = context
 
     def classify(self, candidate: Candidate, surrounding_text: str) -> PrivacyDecision:
+        return self.policy_decision(candidate) or self.keyword_decision(candidate, surrounding_text)
+
+    def policy_decision(self, candidate: Candidate) -> Optional[PrivacyDecision]:
+        """Deterministic policy rules that no model is allowed to override."""
         normalized = candidate.text.strip().upper()
-        replacement = PLACEHOLDERS.get(candidate.entity_type, "<SENSITIVE>")
+        replacement = placeholder_for(candidate.entity_type)
 
         if self._is_safe_literal(normalized):
             return PrivacyDecision(
@@ -76,6 +86,10 @@ class HeuristicContextClassifier(SensitivityClassifier):
                 "Entity type is covered by a mandatory replacement policy.",
             )
 
+        return None
+
+    def keyword_decision(self, candidate: Candidate, surrounding_text: str) -> PrivacyDecision:
+        replacement = placeholder_for(candidate.entity_type)
         lowered = surrounding_text.lower()
         if any(keyword in lowered for keyword in self.context.sensitive_context):
             return PrivacyDecision(
@@ -117,4 +131,3 @@ class HeuristicContextClassifier(SensitivityClassifier):
             return any(address in ipaddress.ip_network(network) for network in self.context.safe_networks)
         except ValueError:
             return False
-

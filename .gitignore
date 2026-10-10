@@ -16,3 +16,9 @@ htmlcov/
 outputs/*
 !outputs/.gitkeep
 
+*.onnx
+*.gguf
+*.safetensors
+models/
+.vscode/
+.idea/

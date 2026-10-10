@@ -19,7 +19,12 @@
 - [x] Define sensitivity classifier interface
 - [x] Implement KEEP / REPLACE decision
 - [x] Create context-dependent test cases
-- [ ] Evaluate classifier
+- [x] Demo the same value with different decisions in different contexts
+- [x] Local language-model classifier (Ollama) with rule fallback
+- [x] Development check of classifier (`scripts/eval_context.py`, 12 dev + 12 holdout cases)
+- [x] Default model chosen: `qwen3:4b-instruct` (0 leaks on 24 cases, Apache-2.0)
+- [ ] Evaluate classifier on a larger, independent set
+- [ ] Verify the selected Battlefield Lightning model and pipeline on UGen300/Hailo-10H
 
 ## P2 — Nice to Have
 

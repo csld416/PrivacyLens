@@ -30,4 +30,5 @@ class PrivacyDecision:
     entity_type: str
     replacement: str
     reason: str
+    decided_by: str = "rule"
 

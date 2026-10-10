@@ -17,6 +17,7 @@ class SensitiveTerm:
 class PrivacyContext:
     purpose: str
     audience: str
+    guidance: List[str]
     always_replace: Set[str]
     safe_literals: Set[str]
     safe_networks: List[str]
@@ -43,6 +44,7 @@ def load_context(path: Path) -> PrivacyContext:
     return PrivacyContext(
         purpose=str(video.get("purpose", "")),
         audience=str(video.get("audience", "")),
+        guidance=[str(value) for value in policy.get("guidance", [])],
         always_replace={str(value).upper() for value in policy.get("always_replace", [])},
         safe_literals={str(value).upper() for value in policy.get("safe_literals", [])},
         safe_networks=[str(value) for value in policy.get("safe_networks", [])],

@@ -28,7 +28,7 @@ PrivacyLens 是一套針對**錄製完成的影片（recorded video）**進行�
 
 原始內容：
 OPENAI_API_KEY=sk-prod-a83fj29...
-ssh admin@140.112.xx.xx
+ssh admin@203.0.113.xx
 Contact: alice@example.com
 
 處理後：
@@ -136,7 +136,7 @@ sk-prod-A8F31K...
 但是：
 
 Production Server:
-140.xxx.xxx.xxx
+203.0.113.xxx
 
 可能需要被替換。
 
@@ -265,13 +265,13 @@ Real-time processing 是未來可能的 optimization，而不是目前系統成�
 
 傳統 redaction：
 
-ssh admin@140.112.xx.xx
+ssh admin@203.0.113.xx
 ↓
 ssh admin@████████████
 
 PrivacyLens：
 
-ssh admin@140.112.xx.xx
+ssh admin@203.0.113.xx
 ↓
 ssh admin@<IP_ADDRESS>
 

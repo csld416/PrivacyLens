@@ -3,6 +3,12 @@ video:
   audience: "General public"
 
 policy:
+  # Plain-language rules for the local language model: what counts as
+  # sensitive for this particular video.
+  guidance:
+    - "Values that belong to production, internal, or customer systems are sensitive."
+    - "Values shown as documentation examples that readers are expected to copy or replace are not sensitive."
+    - "When unsure, treat the value as sensitive."
   always_replace:
     - API_KEY
     - EMAIL
