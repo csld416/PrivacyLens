@@ -1,78 +1,85 @@
-# PrivacyLens Handoff
+# Handoff: verify PrivacyLens on a fresh machine
 
-This document helps the next team member reproduce and continue the Stage I
-prototype. Read `AGENTS.md`, `regulations.md`, `GOAL.md`, `spec.md`, and
-`TASKS.md` before changing the repository.
+> 給隊友：這份是給你的 AI agent 看的驗證說明。請讓 agent 讀完並照做；
+> 驗證完成後，它會刪掉這個檔案。
 
-## Current scope
+Written on 2026-10-10 by Claude (AI coding assistant) for the PrivacyLens team.
+This note is temporary. **Delete it after verification** (see the last section).
 
-- Competition: ASUS UGen AI League, Stage I
-- Selected track: Battlefield Lightning
-- Target hardware: ASUS UGen300 / Hailo-10H
-- Stage I runtime: offline processing of recorded video on a development PC
-- Core idea: context-aware sensitive-information decisions followed by semantic
-  replacement
+## Context
 
-UGen300/Hailo-10H deployment has not been implemented or verified. Do not
-present development-PC measurements as accelerator results.
+PrivacyLens is our ASUS UGen AI League Stage I entry (deadline 2026-10-14
+17:00 Asia/Taipei). Read `AGENTS.md`, `regulations.md`, `GOAL.md`, `spec.md`,
+and `TASKS.md` first, as `AGENTS.md` requires.
 
-## Implemented
+Everything was developed and tested on a single machine only: Ubuntu 20.04,
+Python 3.8.10, Ollama 0.40.2, CPU-only inference. Your job is to confirm that
+the repository works for someone else, following **only** the README.
 
-- OpenCV video reading, frame processing, replacement rendering, and MP4 output
-- Local RapidOCR inference through ONNX Runtime
-- Rule-based email, IPv4, API-key-like, password, token, and policy-term candidates
-- User privacy context in `config/context.yaml`
-- Mandatory deterministic policy rules that a model cannot override
-- Optional local Ollama language-model decisions for ambiguous candidates
-- Rule-based fallback when the local model is unavailable or returns invalid data
-- Synthetic demo generation, comparison video, and privacy-safe JSON audit log
-- Unit tests and a 24-case synthetic context-classifier development check
+Recent changes to be aware of:
 
-## Reproduce
+- A local language-model classifier (`src/privacylens/llm.py`) now decides
+  context-dependent cases (currently IPv4 addresses) through the Ollama API.
+  The default model is `qwen3:4b-instruct`. Without Ollama, the demo falls back
+  to the keyword heuristic and prints a warning.
+- Mandatory secret types (API key, email, password, token) are still replaced by
+  rules and never sent to the model.
+- `scripts/eval_context.py` checks the classifier on 24 hand-written cases.
+- The competition track (Lightning or Thunderstorm) has **not** been chosen yet.
+  `regulations.md` and `spec.md` still mention Lightning; that will be updated
+  once the team decides.
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-pytest
-python run_demo.py
-```
+## Verification steps
 
-Expected generated files:
+Use a fresh clone and a new virtual environment. Do not reuse anything from
+another checkout.
 
-```text
-outputs/demo_input.mp4
-outputs/demo_protected.mp4
-outputs/demo_comparison.mp4
-outputs/detections.json
-```
+1. Clone the repository and follow the README's **Requirements** section
+   exactly: venv, `pip install -r requirements.txt`, install Ollama,
+   `ollama pull qwen3:4b-instruct`. Note every step that fails or is missing
+   from the README.
+2. Run `pytest`. Expected: 22 passed, with no Ollama needed.
+3. Run `python run_demo.py`. Expected:
+   - The first line reads `Classifier: local language model qwen3:4b-instruct ...`.
+     If it prints a WARNING about the model being unavailable, the LLM path is
+     not working. Report it.
+   - The summary shows `frames: 42` and `llm_decisions` greater than 0.
+     Other counts may differ slightly on other platforms.
+4. Open `outputs/detections.json`:
+   - Events with `"decided_by": "llm"`: frames in scene 1 (frame < 14) should
+     be IP_ADDRESS -> `KEEP`, and frames in scene 3 (frame >= 28) should be
+     IP_ADDRESS -> `REPLACE`. This is demo Case B: the same value, decided
+     differently by context.
+   - The log must contain `candidate_sha256` hashes, never raw values such as
+     `sk-demo-secret-123456` or `demo-password-123`.
+5. Watch `outputs/demo_comparison.mp4` (VLC works; browsers do not play `mp4v`):
+   - Scene 1: `API_KEY=<YOUR_API_KEY>` and `SERVER_IP=192.168.10.24` stay
+     visible. This is intended.
+   - Scenes 2 and 3: no raw value may be visible on any frame. Look for
+     `sk-demo-...`, `demo@example.com`, `192.168.10.24`, `demo-password-123`,
+     `demo-token-987654`, and `Project Apollo`. Each must appear as a
+     placeholder such as `<API_KEY>`, `<EMAIL>`, or `<IP_ADDRESS>`.
+6. Run `python scripts/eval_context.py`. Reference result on our machine:
+   `[dev] 10/12, 0 leaks` and `[holdout] 12/12, 0 leaks`. Small differences on
+   other hardware are possible; report them rather than treating them as failures.
+7. Record your environment: OS, CPU, RAM, Python version, Ollama version, and
+   wall-clock time of `python run_demo.py`. A laptop result is especially
+   useful; we have none yet.
 
-Without Ollama, `run_demo.py` prints a warning and uses the transparent
-rule-based fallback. To require the local model path:
+## Rules while verifying
 
-```bash
-ollama pull qwen3:4b-instruct
-python run_demo.py --classifier llm
-python scripts/eval_context.py
-```
+- Do not change code, prompts, or test cases to make results match. Report
+  differences to the team instead.
+- Do not publish any benchmark number that was not actually measured, and never
+  copy the reference numbers above as if they were measured on your machine.
+- Use only the synthetic demo data. Never test with real credentials.
 
-## Verification checklist
+## When verification is done
 
-1. Run the unit tests.
-2. Run the end-to-end demo from the README.
-3. Confirm scene 1 keeps the teaching placeholder.
-4. Confirm scenes 2 and 3 replace the synthetic secret values.
-5. Confirm `outputs/detections.json` contains hashes, not raw sensitive values.
-6. If Ollama is installed, confirm events with `"decided_by": "llm"` exist.
-7. Report the environment and actual measurements; never copy expected numbers
-   as if they were measured on a different machine.
-
-## Remaining work
-
-- Verify the Ollama/Qwen path on another clean machine.
-- Evaluate the classifier on a larger independent set.
-- Select and validate a model supported by UGen300/Hailo-10H for Stage II.
-- Finish the English proposal/slides and approximately three-minute demo video.
-- Add the final GitHub and unlisted demo-video links to the submission.
-
-Use only synthetic data. Do not test with real credentials or private material.
+1. Report to the team: which steps passed, which failed (with error output),
+   and the environment details from step 7.
+2. If a README step was missing or wrong, propose a fix to the team.
+3. Delete this handoff note:
+   - remove the file `HANDOFF.md`;
+   - remove the line that mentions `HANDOFF.md` at the top of `AGENTS.md`;
+   - commit with a message such as `Remove handoff note after verification`.

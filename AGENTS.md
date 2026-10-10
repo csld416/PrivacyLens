@@ -1,5 +1,7 @@
 # Agent Instructions
 
+> **Temporary:** read and follow `HANDOFF.md` (fresh-machine verification). Delete this line together with `HANDOFF.md` once verification is done.
+
 Before modifying the repository:
 
 1. Read `regulations.md`.
