@@ -1,7 +1,7 @@
 # PrivacyLens
 
 PrivacyLens is a Stage I offline prototype for privacy processing of recorded
-videos, built for the ASUS UGen AI League. It reads the
+videos, built for the ASUS UGen AI League (Battlefield Thunderstorm). It reads the
 text on screen with local OCR, finds candidate secrets with rules, lets a local
 language model decide from the user's privacy context whether ambiguous values
 are sensitive, and replaces sensitive values with semantic placeholders:
@@ -9,9 +9,9 @@ are sensitive, and replaces sensitive values with semantic placeholders:
 > Hide the value, preserve the context.
 
 > **Status: working Stage I MVP, CPU-only.** All inference runs locally; no
-> cloud API is used. The competition track has not been chosen yet. Deployment
-> on competition hardware (ASUS UGen300 / Hailo-10H or Intel Arc Pro B70) is
-> Stage II work, and no accelerator performance is claimed.
+> cloud API is used. The target competition hardware is the ASUS UGen Intel Arc
+> Pro B70 32GB; running on it is Stage II work, and no GPU or accelerator
+> performance is claimed.
 
 ## Architecture
 
@@ -79,10 +79,12 @@ and made the fewest errors on cases that were not used to choose the prompt
 (see [Context classifier check](#context-classifier-check)), and its license is
 Apache-2.0. Any Ollama model can be selected with `--llm-model`.
 
-Hardware note: Qwen3-4B is **not** on the checked Hailo-10H GenAI model
-list, whose largest Qwen text model is Qwen3-1.7B; the listed 1-2B models scored
-lower in the reported development check. Running it on Intel Arc Pro B70 has not
-been verified either.
+Track choice: this is why the project targets Battlefield Thunderstorm. Qwen3-4B
+is **not** on Hailo's Hailo-10H GenAI model list (Battlefield Lightning), whose
+largest Qwen text model is Qwen3-1.7B, and the listed 1-2B models scored lower in
+our development check. The Intel Arc Pro B70 has 32 GB of memory (vendor
+specification), enough for a 4B model and larger ones. Running Qwen3-4B on the
+B70 has **not** been verified yet.
 
 ## Requirements
 
@@ -238,26 +240,25 @@ Ollama.
   got the same decision per scene, but that video is still synthetic.
 - Replacement appearance is intentionally simple and may not match the source UI.
 - Audio is not copied into the output.
-- Deployment on UGen300/Hailo-10H or Intel Arc Pro B70 has not been
-  implemented or verified.
+- Deployment on the Intel Arc Pro B70 or the organizer's SDV environment has not
+  been implemented or verified.
 
 ## Stage II plan (not implemented)
 
-The competition track has not been chosen yet. The Ollama-API client is the
-integration point for either platform; nothing below has been verified.
+Target: ASUS UGen Intel Arc Pro B70 32GB through the organizer-provided virtual
+host (SDV system). Nothing below has been verified.
 
-- ASUS UGen300 / Hailo-10H (Battlefield Lightning): point the client at Hailo's
-  Ollama-compatible `hailo-ollama` server. The default Stage I model is not on
-  Hailo's list, so a listed model would need better prompting, task
-  decomposition, or fine-tuning, or a larger model would need to be compiled
-  for Hailo-10H.
-- ASUS UGen Intel Arc Pro B70 32GB (Battlefield Thunderstorm): run the same or
-  larger language models, or a vision-language model that reads the frame
-  directly; verify which runtime (for example Ollama or OpenVINO) supports the
-  card.
-- On either platform: let the model propose candidates rules cannot find
-  (customer names, internal hostnames, project names), add temporal tracking
-  across frames, and build a larger labelled evaluation set.
+- Find a runtime that serves the model on Intel Arc (for example Ollama or
+  OpenVINO) and point the existing Ollama-API client at it, or add a client for
+  that runtime behind the same `SensitivityClassifier` interface.
+- Use the larger memory for larger language models, or a vision-language model
+  that reads the frame directly instead of OCR text only.
+- Let the model propose candidates that rules cannot find (customer names,
+  internal hostnames, project names).
+- Process full-frame-rate, longer recordings; add temporal tracking across
+  frames.
+- Build a larger labelled evaluation set and measure accuracy and speed on the
+  B70 itself.
 
 ## References
 

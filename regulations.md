@@ -16,8 +16,8 @@ This project is intended for:
 
 Competition: ASUS UGen AI League
 Stage: Stage I
-Selected Battlefield: Battlefield Lightning
-Target Hardware: ASUS UGen300 AI Accelerator / Hailo-10H
+Selected Battlefield: Battlefield Thunderstorm
+Target Hardware: ASUS UGen Intel Arc Pro B70 32GB (Stage II: organizer-provided virtual host / SDV system)
 Project: PrivacyLens
 Primary Domain: AI-assisted privacy processing for recorded video
 
@@ -29,9 +29,9 @@ The Stage I prototype may run on:
 * an SBC;
 * other suitable development hardware.
 
-Actual UGen300 execution is not required for Stage I based on the competition rules supplied to the team.
+Actual Intel Arc Pro B70 execution is not required for Stage I based on the competition rules supplied to the team.
 
-Do not claim that the prototype currently runs on UGen300 unless this has actually been implemented and verified.
+Do not claim that the prototype currently runs on Intel Arc Pro B70 or the SDV environment unless this has actually been implemented and verified.
 
 ⸻
 
@@ -207,15 +207,15 @@ Do not convert planned functionality into present-tense implementation claims.
 
 8. Hardware Claims
 
-The project targets the Lightning battlefield and UGen300/Hailo-10H.
+The project targets the Thunderstorm battlefield and the ASUS UGen Intel Arc Pro B70 32GB.
 
-However, Stage I laptop experiments must not be presented as UGen300 results.
+However, Stage I laptop or development-PC experiments must not be presented as Intel Arc Pro B70 results.
 
 Never fabricate:
 
-* Hailo latency;
-* Hailo FPS;
-* Hailo throughput;
+* B70 latency;
+* B70 FPS;
+* B70 throughput;
 * TOPS utilization;
 * memory usage;
 * power consumption;
@@ -225,7 +225,7 @@ Never fabricate:
 
 If a number comes from official documentation rather than our own experiment, explicitly identify it as a vendor specification or published reference result.
 
-If a model has not been verified as deployable on Hailo-10H, do not state that it is supported as fact.
+If a model or runtime has not been verified on Intel Arc Pro B70, do not state that it is supported as fact.
 
 Use wording such as:
 
@@ -500,8 +500,8 @@ Stage II / Future Work
 
 May include:
 
-* UGen300 integration;
-* Hailo-10H deployment;
+* Intel Arc Pro B70 integration (organizer SDV environment);
+* GPU runtime verification (for example Ollama or OpenVINO on Intel Arc);
 * performance optimization;
 * more advanced contextual models;
 * larger evaluation datasets;

@@ -43,7 +43,7 @@ The prototype must:
 - Zoom, Google Meet, or virtual-camera integration;
 - cloud APIs;
 - generative inpainting; and
-- UGen300/Hailo-10H performance claims without verified deployment.
+- Intel Arc Pro B70 performance claims without verified deployment.
 
 Detailed product scope is defined in `spec.md`. Competition and submission
 constraints in `regulations.md` take precedence over all other project files.

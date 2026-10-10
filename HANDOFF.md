@@ -25,9 +25,9 @@ Recent changes to be aware of:
 - Mandatory secret types (API key, email, password, token) are still replaced by
   rules and never sent to the model.
 - `scripts/eval_context.py` checks the classifier on 24 hand-written cases.
-- The competition track (Lightning or Thunderstorm) has **not** been chosen yet.
-  `regulations.md` and `spec.md` still mention Lightning; that will be updated
-  once the team decides.
+- The competition track is **Battlefield Thunderstorm** (ASUS UGen Intel Arc
+  Pro B70 32GB). Running on that hardware is Stage II and has not been verified;
+  this verification is about the Stage I CPU path only.
 
 ## Verification steps
 

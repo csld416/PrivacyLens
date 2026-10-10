@@ -473,23 +473,27 @@ Privacy Analysis
  ↓
 Replacement
 
-不要求現在就完成 UGen300 deployment。
+不要求現在就完成 Intel Arc Pro B70 deployment。
+
+競賽賽道：Battlefield Thunderstorm（ASUS UGen Intel Arc Pro B70 32GB）。
+選擇原因：Stage I 選定的 context classifier（Qwen3-4B）不在 Hailo-10H 支援清單上，
+而清單上的 1–2B 模型在我們的開發檢查中表現較差；B70 的 32GB 記憶體可容納 4B 及更大的模型。
 
 Stage II 才規劃：
 
 Video
   ↓
-Host
+Host（主辦單位提供之虛擬主機 / SDV）
   ↓
-UGen300 / Hailo-10H
+Intel Arc Pro B70
   ↓
-Supported AI Inference
+Local LLM / VLM Inference
   ↓
 Host Privacy Pipeline
   ↓
 Protected Video
 
-實際哪些 workload 放到 Hailo-10H，必須根據可部署模型與 runtime 驗證後決定。
+實際使用的 runtime（例如 Ollama 或 OpenVINO）與模型，必須在 B70 上驗證後決定。
 
 不得在 proposal 中宣稱尚未驗證的 hardware performance。
 
@@ -521,7 +525,7 @@ Ask cloud model what is sensitive
 
 The information being analyzed for privacy protection should not itself need to be exposed to an external service.
 
-因此 Edge AI 與 PrivacyLens 的問題具有自然關聯，而不是單純為了參賽硬加入 accelerator。
+因此本地 / 企業內部部署（on-premises）的 AI 與 PrivacyLens 的問題具有自然關聯，而不是單純為了參賽硬加入 accelerator。
 
 ⸻
 

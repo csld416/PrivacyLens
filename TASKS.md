@@ -24,7 +24,8 @@
 - [x] Development check of classifier (`scripts/eval_context.py`, 12 dev + 12 holdout cases)
 - [x] Default model chosen: `qwen3:4b-instruct` (0 leaks on 24 cases, Apache-2.0)
 - [ ] Evaluate classifier on a larger, independent set
-- [ ] Choose competition track (Lightning vs Thunderstorm) and verify the model runs on that hardware
+- [x] Choose competition track: Battlefield Thunderstorm (Intel Arc Pro B70 32GB)
+- [ ] Stage II: verify the model and runtime on Intel Arc Pro B70 / SDV environment
 
 ## P2 — Nice to Have
 
