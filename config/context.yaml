@@ -1,0 +1,28 @@
+video:
+  purpose: "Public programming tutorial"
+  audience: "General public"
+
+policy:
+  always_replace:
+    - API_KEY
+    - EMAIL
+    - PASSWORD
+    - TOKEN
+  safe_literals:
+    - "<YOUR_API_KEY>"
+    - "YOUR_API_KEY"
+  safe_networks:
+    - "127.0.0.0/8"
+  sensitive_context:
+    - production
+    - private
+    - internal
+    - customer
+  safe_context:
+    - documentation
+    - example
+    - localhost
+  sensitive_terms:
+    - value: "Project Apollo"
+      type: PROJECT_NAME
+
