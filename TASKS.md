@@ -24,7 +24,7 @@
 - [x] Development check of classifier (`scripts/eval_context.py`, 12 dev + 12 holdout cases)
 - [x] Default model chosen: `qwen3:4b-instruct` (0 leaks on 24 cases, Apache-2.0)
 - [ ] Evaluate classifier on a larger, independent set
-- [ ] Verify the selected Battlefield Lightning model and pipeline on UGen300/Hailo-10H
+- [ ] Choose competition track (Lightning vs Thunderstorm) and verify the model runs on that hardware
 
 ## P2 — Nice to Have
 

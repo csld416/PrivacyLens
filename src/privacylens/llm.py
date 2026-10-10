@@ -3,8 +3,8 @@
 The model decides KEEP or REPLACE for candidates that the deterministic policy
 leaves open, using the user's privacy context and the text on the same frame.
 Requests are only sent to a loopback address so that OCR text never leaves the
-machine. Hailo's hailo-ollama server exposes an Ollama-compatible API; running
-this client against it is planned for Stage II and has not been verified.
+machine. Any Ollama-compatible server can be used, for example Hailo's
+hailo-ollama; running on competition hardware has not been verified.
 """
 
 import json

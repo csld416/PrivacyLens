@@ -9,9 +9,9 @@ are sensitive, and replaces sensitive values with semantic placeholders:
 > Hide the value, preserve the context.
 
 > **Status: working Stage I MVP, CPU-only.** All inference runs locally; no
-> cloud API is used. Deployment on the target competition hardware (ASUS
-> UGen300 / Hailo-10H, Battlefield Lightning) is Stage II work, and no accelerator
-> performance is claimed.
+> cloud API is used. The competition track has not been chosen yet. Deployment
+> on competition hardware (ASUS UGen300 / Hailo-10H or Intel Arc Pro B70) is
+> Stage II work, and no accelerator performance is claimed.
 
 ## Architecture
 
@@ -81,7 +81,8 @@ Apache-2.0. Any Ollama model can be selected with `--llm-model`.
 
 Hardware note: Qwen3-4B is **not** on the checked Hailo-10H GenAI model
 list, whose largest Qwen text model is Qwen3-1.7B; the listed 1-2B models scored
-lower in the reported development check. Deployment remains unverified.
+lower in the reported development check. Running it on Intel Arc Pro B70 has not
+been verified either.
 
 ## Requirements
 
@@ -237,17 +238,26 @@ Ollama.
   got the same decision per scene, but that video is still synthetic.
 - Replacement appearance is intentionally simple and may not match the source UI.
 - Audio is not copied into the output.
-- Deployment on UGen300/Hailo-10H has not been implemented or verified.
+- Deployment on UGen300/Hailo-10H or Intel Arc Pro B70 has not been
+  implemented or verified.
 
 ## Stage II plan (not implemented)
 
-The selected track is Battlefield Lightning. The Ollama-API client is a
-candidate integration point for ASUS UGen300 / Hailo-10H through Hailo's
-Ollama-compatible `hailo-ollama` server; this has not been verified. The default
-Stage I model is not on the checked Hailo list, so Stage II must select and
-evaluate a supported model or verify a compliant deployment path. Future work
-also includes model-proposed candidates, temporal tracking, and a larger
-labelled evaluation set.
+The competition track has not been chosen yet. The Ollama-API client is the
+integration point for either platform; nothing below has been verified.
+
+- ASUS UGen300 / Hailo-10H (Battlefield Lightning): point the client at Hailo's
+  Ollama-compatible `hailo-ollama` server. The default Stage I model is not on
+  Hailo's list, so a listed model would need better prompting, task
+  decomposition, or fine-tuning, or a larger model would need to be compiled
+  for Hailo-10H.
+- ASUS UGen Intel Arc Pro B70 32GB (Battlefield Thunderstorm): run the same or
+  larger language models, or a vision-language model that reads the frame
+  directly; verify which runtime (for example Ollama or OpenVINO) supports the
+  card.
+- On either platform: let the model propose candidates rules cannot find
+  (customer names, internal hostnames, project names), add temporal tracking
+  across frames, and build a larger labelled evaluation set.
 
 ## References
 
