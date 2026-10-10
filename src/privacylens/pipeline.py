@@ -11,7 +11,7 @@ import numpy as np
 from .config import PrivacyContext
 from .context import SensitivityClassifier
 from .detectors import detect_candidates
-from .models import Candidate, OCRWord, PrivacyDecision
+from .models import Candidate, PrivacyDecision
 from .ocr import OCREngine
 from .renderer import render_replacement, replace_text
 

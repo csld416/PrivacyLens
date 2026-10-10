@@ -1,4 +1,5 @@
-from privacylens.detectors import detect_patterns
+from privacylens.config import SensitiveTerm
+from privacylens.detectors import detect_patterns, detect_sensitive_terms
 from privacylens.models import OCRWord
 
 
@@ -28,3 +29,11 @@ def test_detects_assigned_secrets():
 def test_detects_teaching_placeholder_for_context_decision():
     assert types_and_values("API_KEY=<YOUR_API_KEY>") == [("API_KEY", "<YOUR_API_KEY>")]
 
+
+
+def test_detects_policy_sensitive_terms_case_insensitively():
+    terms = [SensitiveTerm("Project Apollo", "PROJECT_NAME")]
+    found = detect_sensitive_terms(word("Deploying project apollo now"), terms)
+    assert [(item.entity_type, item.text, item.source) for item in found] == [
+        ("PROJECT_NAME", "project apollo", "context-policy")
+    ]

@@ -1,7 +1,7 @@
 """Generate controlled synthetic video and a side-by-side result."""
 
 from pathlib import Path
-from typing import List, Sequence
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -14,10 +14,11 @@ FPS = 2.0
 
 SCENES: Sequence[Sequence[str]] = (
     (
-        "DOCUMENTATION EXAMPLE (SAFE PLACEHOLDER)",
+        "DOCUMENTATION EXAMPLE (PUBLIC TUTORIAL)",
         "How to configure the SDK:",
         "API_KEY=<YOUR_API_KEY>",
-        "This placeholder is intended for public tutorials.",
+        "SERVER_IP=192.168.10.24",
+        "Readers substitute their own values.",
     ),
     (
         "PRODUCTION TERMINAL (SENSITIVE)",

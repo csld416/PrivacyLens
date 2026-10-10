@@ -7,6 +7,7 @@ the same classifier interface without changing the video pipeline.
 
 import ipaddress
 from abc import ABC, abstractmethod
+from difflib import SequenceMatcher
 
 from .config import PrivacyContext
 from .models import Candidate, PrivacyDecision
@@ -24,6 +25,10 @@ PLACEHOLDERS = {
     "PERSON": "<PERSON>",
 }
 
+# OCR often misreads "<YOUR_API_KEY>" as "<YOUR_APLLKEY>" or similar. Fuzzy
+# matching is limited to bracketed placeholders so that a real secret value
+# can never be kept merely because it resembles an allowlisted literal.
+PLACEHOLDER_SIMILARITY = 0.85
 
 class SensitivityClassifier(ABC):
     @abstractmethod
@@ -39,7 +44,7 @@ class HeuristicContextClassifier(SensitivityClassifier):
         normalized = candidate.text.strip().upper()
         replacement = PLACEHOLDERS.get(candidate.entity_type, "<SENSITIVE>")
 
-        if normalized in self.context.safe_literals:
+        if self._is_safe_literal(normalized):
             return PrivacyDecision(
                 "KEEP",
                 candidate.entity_type,
@@ -93,6 +98,17 @@ class HeuristicContextClassifier(SensitivityClassifier):
             candidate.entity_type,
             replacement,
             "Conservative fallback for a detected sensitive candidate.",
+        )
+
+    def _is_safe_literal(self, normalized: str) -> bool:
+        if normalized in self.context.safe_literals:
+            return True
+        if not (normalized.startswith("<") and normalized.endswith(">")):
+            return False
+        return any(
+            literal.startswith("<")
+            and SequenceMatcher(None, normalized, literal).ratio() >= PLACEHOLDER_SIMILARITY
+            for literal in self.context.safe_literals
         )
 
     def _safe_ip(self, value: str) -> bool:
