@@ -40,6 +40,12 @@ Not installed by pip. Users install Ollama and pull the model themselves.
 The default model is Apache-2.0. The Llama models were only used for the
 comparison and are not needed to run PrivacyLens.
 
+## Optional external tool
+
+| Component | Source | License | Use |
+| --- | --- | --- | --- |
+| FFmpeg with libx264 | https://ffmpeg.org/ | LGPL-2.1+ / GPL-2.0+ (libx264 is GPL) | Re-encodes output videos as H.264 when installed; run as a separate program, not bundled or linked |
+
 ## Transitive dependencies
 
 | Component | Version tested | License |

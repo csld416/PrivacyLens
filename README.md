@@ -92,14 +92,25 @@ B70 has **not** been verified yet.
   `numpy<2.0` has no wheels for 3.13+.
 - On Debian/Ubuntu, the venv module is a separate package:
   `sudo apt install python3-venv`
+- On macOS, if `python3 --version` is 3.13 or newer, install 3.12 alongside it
+  (`brew install python@3.12`) and create the venv with `python3.12 -m venv .venv`.
 - [Ollama](https://ollama.com/download) for the language-model classifier
   (optional: without it the demo runs with the rule-based fallback and says so).
+- [ffmpeg](https://ffmpeg.org/) with libx264, recommended so the output videos
+  play in QuickTime and browsers (optional; see the video-format note below).
 - About 3 GB of disk for the models. No GPU, API key, or network access is
   needed at run time (network is needed once, to download the models).
 
-Tested environment: Linux x86_64 (Ubuntu 20.04), Python 3.8.10, Ollama 0.40.2
-with GPUs disabled (CPU-only inference). Laptop hardware and other operating
-systems have not yet been verified by the team.
+Tested environments:
+
+| Machine | OS | Python | Result |
+| --- | --- | --- | --- |
+| Linux x86_64 server, Ollama 0.40.2 with GPUs disabled (CPU-only) | Ubuntu 20.04 | 3.8.10 | unit tests pass; demo, evaluation, and stress test with `qwen3:4b-instruct` |
+| MacBook Pro, Apple M2, 16 GB RAM, Ollama macOS app | macOS | 3.12 | unit tests pass; demo with `qwen3:4b-instruct` in 9.1 s wall-clock (model already loaded); Case B reproduced (scene 1 KEEP, scene 3 REPLACE, decided by the model) |
+
+Windows has not been verified. Times are single runs of the 21-second synthetic
+demo, not benchmarks; the first run after starting Ollama also includes model
+loading.
 
 ```bash
 python3 -m venv .venv
@@ -116,7 +127,7 @@ ollama pull qwen3:4b-instruct
 python run_demo.py
 ```
 
-The first line of output states which classifier is in use. Use
+The line starting with `Classifier:` states which classifier is in use. Use
 `--classifier llm` to fail instead of falling back when the model is missing,
 or `--classifier rules` to run without a model.
 
@@ -132,12 +143,12 @@ outputs/detections.json      structured decisions, reasons, and decided_by
 The audit log records entity types, actions, reasons, coordinates, and a
 one-way hash of each candidate. It does not copy raw detected values.
 
-The videos use the `mp4v` (MPEG-4 Part 2) codec, which VLC and most desktop
-players handle but web browsers do not. To embed or preview in a browser:
-
-```bash
-ffmpeg -i outputs/demo_comparison.mp4 -c:v libx264 -pix_fmt yuv420p demo_comparison_h264.mp4
-```
+Video format: OpenCV writes `mp4v` (MPEG-4 Part 2), which QuickTime on macOS
+and web browsers show as a green or blank picture. If `ffmpeg` is installed,
+`run_demo.py` re-encodes the videos it wrote as H.264 in place, so they play
+everywhere. Without `ffmpeg` it prints a note and leaves them in `mp4v`; play
+them with VLC or install ffmpeg (`brew install ffmpeg` / `sudo apt install ffmpeg`).
+A video passed with `--input` is never modified.
 
 To process a different recorded video using the same policy:
 
@@ -220,7 +231,8 @@ pytest
 ```
 
 The tests cover every implemented detector, context-dependent decisions,
-OCR-tolerant placeholder matching, semantic text replacement, and the
+OCR-tolerant placeholder matching, semantic text replacement, H.264
+re-encoding (skipped when ffmpeg is missing), and the
 language-model classifier (with a fake model: prompt contents, policy override,
 fallback on invalid or missing output, local-only endpoint). They do not need
 Ollama.

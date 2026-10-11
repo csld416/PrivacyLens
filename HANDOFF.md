@@ -38,9 +38,10 @@ another checkout.
    exactly: venv, `pip install -r requirements.txt`, install Ollama,
    `ollama pull qwen3:4b-instruct`. Note every step that fails or is missing
    from the README.
-2. Run `pytest`. Expected: 22 passed, with no Ollama needed.
+2. Run `pytest`. Expected: 24 passed (or 23 passed and 1 skipped if ffmpeg is
+   not installed), with no Ollama needed.
 3. Run `python run_demo.py`. Expected:
-   - The first line reads `Classifier: local language model qwen3:4b-instruct ...`.
+   - The line starting with `Classifier:` reads `Classifier: local language model qwen3:4b-instruct ...`.
      If it prints a WARNING about the model being unavailable, the LLM path is
      not working. Report it.
    - The summary shows `frames: 42` and `llm_decisions` greater than 0.
@@ -52,7 +53,8 @@ another checkout.
      differently by context.
    - The log must contain `candidate_sha256` hashes, never raw values such as
      `sk-demo-secret-123456` or `demo-password-123`.
-5. Watch `outputs/demo_comparison.mp4` (VLC works; browsers do not play `mp4v`):
+5. Watch `outputs/demo_comparison.mp4`. If step 3 printed "Videos are H.264",
+   QuickTime and browsers can play it; otherwise use VLC:
    - Scene 1: `API_KEY=<YOUR_API_KEY>` and `SERVER_IP=192.168.10.24` stay
      visible. This is intended.
    - Scenes 2 and 3: no raw value may be visible on any frame. Look for
@@ -63,8 +65,8 @@ another checkout.
    `[dev] 10/12, 0 leaks` and `[holdout] 12/12, 0 leaks`. Small differences on
    other hardware are possible; report them rather than treating them as failures.
 7. Record your environment: OS, CPU, RAM, Python version, Ollama version, and
-   wall-clock time of `python run_demo.py`. A laptop result is especially
-   useful; we have none yet.
+   wall-clock time of `python run_demo.py`. A MacBook Pro (M2, 16 GB) run has
+   passed; a Windows or Intel-laptop result would be especially useful.
 
 ## Rules while verifying
 
